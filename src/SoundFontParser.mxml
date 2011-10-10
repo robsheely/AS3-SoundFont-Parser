@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application
+    xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    xmlns:mx="library://ns.adobe.com/flex/mx"
+    xmlns:net="flash.net.*"
+    xmlns:sf="com.ferretgodmother.soundfont.*"
+    width="955"
+    height="600"
+>
+    <fx:Declarations>
+        <net:FileReference
+            id="fileReference"
+            complete="fileReference_onComplete(event)"
+            ioError="fileReference_onError(event)"
+            select="fileReference_onSelect(event)"
+        />
+        <sf:SoundFontParser
+            id="soundFontParser"
+        />
+    </fx:Declarations>
+
+    <fx:Script>
+    <![CDATA[
+        import mx.collections.ArrayCollection;
+
+        import spark.events.IndexChangeEvent;
+
+        import com.ferretgodmother.soundfont.SoundFont;
+        import com.ferretgodmother.soundfont.demo.MidiSoundFontPlayer;
+        import com.ferretgodmother.soundfont.demo.WavExporter;
+
+        import tonfall.format.midi.MidiFormat;
+
+        protected var _sfFileFilter:FileFilter = new FileFilter("Sound Fonts", ".sf2;*.SF2");
+        protected var _soundFont:SoundFont;
+        protected var _exporter:WavExporter;
+        protected var _player:MidiSoundFontPlayer = new MidiSoundFontPlayer();
+
+        protected function soundFontBrowseButton_onClick(event:MouseEvent):void
+        {
+            playButton.enabled = false;
+            exportSamplesButton.enabled = false;
+            fileReference.browse([_sfFileFilter]);
+            _player.stop();
+            playButton.label = "Play";
+        }
+
+        protected function playButton_onClick(event:MouseEvent):void
+        {
+            _player.soundFont = _soundFont;
+            if (!_player.isPlaying)
+            {
+                _player.play();
+                playButton.label = "Stop";
+            }
+            else
+            {
+                _player.stop();
+                playButton.label = "Play";
+            }
+        }
+
+        protected function exportSamplesButton_onClick(event:MouseEvent):void
+        {
+            var exporter:WavExporter = new WavExporter();
+            exporter.exportSamples(_soundFont.data);
+        }
+
+        protected function fileReference_onSelect(event:Event):void
+        {
+            fileReference.load();
+            this.progressBar.text = "Parsing soundfont. Please wait..."
+            this.progressBar.visible = true;
+        }
+
+        protected function fileReference_onError(event:Event):void
+        {
+            fileReference.load();
+        }
+
+        protected function fileReference_onComplete(event:Event):void
+        {
+            _soundFont = soundFontParser.parse(fileReference.data);
+            presetComboBox.dataProvider = new ArrayCollection(_soundFont.presets);
+            presetComboBox.selectedIndex = 0;
+            _soundFont.selectPreset(0);
+            dataTextArea.text = _soundFont.selectedPreset.toString();
+            playButton.enabled = true;
+            exportSamplesButton.enabled = true;
+            this.progressBar.visible = false;
+        }
+
+        protected function presetComboBox_onChange(event:IndexChangeEvent):void
+        {
+            _soundFont.selectPreset(presetComboBox.selectedIndex);
+            dataTextArea.text = _soundFont.selectedPreset.toString();
+        }
+    ]]>
+    </fx:Script>
+
+    <mx:Panel
+        id="panel"
+        layout="vertical"
+        width="100%"
+        height="100%"
+    >
+        <s:ComboBox
+            id="presetComboBox"
+            change="presetComboBox_onChange(event)"
+            labelField="name"
+        />
+        <s:TextArea
+            id="dataTextArea"
+            width="100%"
+            height="100%"
+        />
+        <mx:ControlBar>
+            <mx:Button
+                id="soundFontBrowseButton"
+                label="Select SoundFont (sf2) File"
+                click="soundFontBrowseButton_onClick(event);"
+            />
+            <mx:Button
+                id="playButton"
+                label="Play"
+                enabled="false"
+                click="playButton_onClick(event);"
+            />
+            <mx:Button
+                id="exportSamplesButton"
+                label="Export Samples"
+                enabled="false"
+                click="exportSamplesButton_onClick(event);"
+            />
+            <mx:Label
+                id="progressBar"
+                text="Parsing soundfont. Please wait..."
+                visible="false"
+            />
+        </mx:ControlBar>
+    </mx:Panel>
+</s:Application>
