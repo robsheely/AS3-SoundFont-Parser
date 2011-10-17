@@ -3,6 +3,7 @@ package com.ferretgodmother.soundfont
     import com.ferretgodmother.soundfont.chunks.data.SampleRecord;
 
     import flash.utils.ByteArray;
+    import flash.utils.Endian;
 
     public class NoteSample extends SoundPropertyObject
     {
@@ -31,21 +32,32 @@ package com.ferretgodmother.soundfont
 
         public var sample:SampleRecord;
 
+        protected var _sampleData:ByteArray;
+
         public function NoteSample(sample:SampleRecord, keyNum:int, velocity:int)
         {
             super("NoteSample");
+            this.sample = sample;
             if (PROPERTY_NAMES.length == 0)
             {
                 initStaticConstants(PROPERTY_NAMES, DEFAULTS);
             }
-            this.sample = sample;
+            generateSampleData(sample);
             this.keyNum = keyNum;
             this.velocity = velocity;
         }
 
+        protected function generateSampleData(sample:SampleRecord):void
+        {
+            _sampleData = new ByteArray();
+            _sampleData.endian = Endian.LITTLE_ENDIAN;
+            _sampleData.writeBytes(sample.bytes, this.start, this.end - this.start);
+            _sampleData.position = 0;
+        }
+
         public function get sampleData():ByteArray
         {
-            return sample.sampleData;
+            return _sampleData;
         }
 
         override public function isDefault(prop:String):Boolean
@@ -110,16 +122,6 @@ package com.ferretgodmother.soundfont
         public function get loopEnd():uint
         {
             return this.sample.loopEnd + this.endLoopAddrsCoarseOffset * 32768 + this.endLoopAddrsOffset;
-        }
-
-        public function get relativeLoopStart():uint
-        {
-            return this.loopStart - this.start;
-        }
-
-        public function get relativeLoopEnd():uint
-        {
-            return this.loopEnd - this.start;
         }
     }
 }

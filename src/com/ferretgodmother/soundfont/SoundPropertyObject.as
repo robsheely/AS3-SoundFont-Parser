@@ -68,9 +68,9 @@ package com.ferretgodmother.soundfont
             return PROPERTY_NAMES.indexOf(prop) != -1 && DEFAULTS[prop] == this[prop];
         }
 
-        override protected function includePropertyInXML(propertyName:String):Boolean
+        override protected function includePropertyInSerialization(propertyName:String):Boolean
         {
-            return !isDefault(propertyName) && super.includePropertyInXML(propertyName);
+            return !isDefault(propertyName) && super.includePropertyInSerialization(propertyName);
         }
 
         protected function initStaticConstants(propertyNames:Array, defaults:Object):void

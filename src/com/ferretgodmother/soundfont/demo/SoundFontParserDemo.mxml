@@ -3,9 +3,11 @@
     xmlns:fx="http://ns.adobe.com/mxml/2009"
     xmlns:s="library://ns.adobe.com/flex/spark"
     xmlns:mx="library://ns.adobe.com/flex/mx"
+    xmlns:demo="com.ferretgodmother.soundfont.demo.*"
     xmlns:net="flash.net.*"
     xmlns:sf="com.ferretgodmother.soundfont.*"
-    width="955"
+    xmlns:utils="com.ferretgodmother.soundfont.utils.*"
+    width="800"
     height="600"
 >
     <fx:Declarations>
@@ -18,60 +20,66 @@
         <sf:SoundFontParser
             id="soundFontParser"
         />
+        <utils:WavExporter
+            id="exporter"
+            error="exporter_onError(event)"
+        />
+        <demo:MidiSoundFontPlayer
+            id="player"
+            playing="player_onPlaying()"
+        />
     </fx:Declarations>
 
     <fx:Script>
     <![CDATA[
+        import mx.controls.Alert;
         import mx.collections.ArrayCollection;
 
         import spark.events.IndexChangeEvent;
 
         import com.ferretgodmother.soundfont.SoundFont;
-        import com.ferretgodmother.soundfont.demo.MidiSoundFontPlayer;
-        import com.ferretgodmother.soundfont.demo.WavExporter;
+        import com.ferretgodmother.soundfont.utils.WavExporter;
 
         import tonfall.format.midi.MidiFormat;
 
         protected var _sfFileFilter:FileFilter = new FileFilter("Sound Fonts", ".sf2;*.SF2");
         protected var _soundFont:SoundFont;
-        protected var _exporter:WavExporter;
-        protected var _player:MidiSoundFontPlayer = new MidiSoundFontPlayer();
 
         protected function soundFontBrowseButton_onClick(event:MouseEvent):void
         {
             playButton.enabled = false;
             exportSamplesButton.enabled = false;
             fileReference.browse([_sfFileFilter]);
-            _player.stop();
+            player.stop();
             playButton.label = "Play";
         }
 
         protected function playButton_onClick(event:MouseEvent):void
         {
-            _player.soundFont = _soundFont;
-            if (!_player.isPlaying)
+            player.soundFont = _soundFont;
+            if (!player.isPlaying)
             {
-                _player.play();
+                this.statusLabel.text = "Please wait...";
+                player.play();
                 playButton.label = "Stop";
             }
             else
             {
-                _player.stop();
                 playButton.label = "Play";
+                player.stop();
             }
         }
 
         protected function exportSamplesButton_onClick(event:MouseEvent):void
         {
-            var exporter:WavExporter = new WavExporter();
             exporter.exportSamples(_soundFont.data);
         }
 
         protected function fileReference_onSelect(event:Event):void
         {
             fileReference.load();
-            this.progressBar.text = "Parsing soundfont. Please wait..."
-            this.progressBar.visible = true;
+            this.statusLabel.text = "Parsing soundfont. Please wait...";
+            this.statusLabel.visible = true;
         }
 
         protected function fileReference_onError(event:Event):void
@@ -88,13 +96,23 @@
             dataTextArea.text = _soundFont.selectedPreset.toString();
             playButton.enabled = true;
             exportSamplesButton.enabled = true;
-            this.progressBar.visible = false;
+            this.statusLabel.visible = false;
         }
 
         protected function presetComboBox_onChange(event:IndexChangeEvent):void
         {
             _soundFont.selectPreset(presetComboBox.selectedIndex);
             dataTextArea.text = _soundFont.selectedPreset.toString();
+        }
+
+        protected function exporter_onError(event:ErrorEvent):void
+        {
+            Alert.show(event.text, "Error");
+        }
+
+        protected function player_onPlaying():void
+        {
+            this.statusLabel.text = "";
         }
     ]]>
     </fx:Script>
@@ -114,6 +132,7 @@
             id="dataTextArea"
             width="100%"
             height="100%"
+            text="This is a demo of the AS3 SoundFont Parser. Use the buttons below to select a SoundFont (sf2) file and then play a midi tune or export the wav samples to disk."
         />
         <mx:ControlBar>
             <mx:Button
@@ -134,7 +153,7 @@
                 click="exportSamplesButton_onClick(event);"
             />
             <mx:Label
-                id="progressBar"
+                id="statusLabel"
                 text="Parsing soundfont. Please wait..."
                 visible="false"
             />

@@ -47,7 +47,7 @@ package com.ferretgodmother.soundfont
             var propertyNames:Array = getPropertyNames(true);
             for each (var propertyName:String in propertyNames)
             {
-                if (includePropertyInXML(propertyName))
+                if (includePropertyInSerialization(propertyName))
                 {
                     if (this[propertyName] is Boolean)
                     {
@@ -83,7 +83,7 @@ package com.ferretgodmother.soundfont
          * A method to allow subclasses to define criteria for including or exclusing particular properties from XML
          * serialization.
          */
-        protected function includePropertyInXML(propertyName:String):Boolean
+        protected function includePropertyInSerialization(propertyName:String):Boolean
         {
             return this[propertyName] != null;
         }
