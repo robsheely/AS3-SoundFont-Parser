@@ -1,6 +1,6 @@
 /**
  * ZoneContainer is the base class for Preset and Instrument. It defines the common elements of these two classes. The
- * most important of these is the zones array which contains definitions for specified keyNum and velocity pairs.
+ * most important of these is the zones array which contains definitions for specified keyRange/velocityRange pairs.
  */
 package com.ferretgodmother.soundfont
 {

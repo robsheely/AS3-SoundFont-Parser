@@ -82,6 +82,10 @@
     should be ignored. If a non-global list does not end in a sampleID generator, the zone should be ignored. If
     the sampleID generator value is equal to or greater than the terminal sampleID, the file should be rejected as
     structurally unsound.
+
+    (Note: The properties of these two classes are identical so there is no "InstrumentGeneratorsSubchunk" or
+    "PresetGeneratorsSubchunk" class, only the "GeneratorsSubchunk" class which is instantiated twice: once for the
+    Instrument Generators subchunk and once for the Preset Generators subchunk.)
 */
 package com.ferretgodmother.soundfont.chunks.data
 {

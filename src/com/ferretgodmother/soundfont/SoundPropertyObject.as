@@ -1,3 +1,9 @@
+/**
+ * SoundPropertyObject is the base class for Zone and NoteSample. It contains the properties that can be added to a
+ * note or a zone by a generator. Another way to look at it is a SoundFontParser sound object consists of a sample
+ * waveform and a series of properties that modify it. These properties are contained in the generator subchunks of
+ * the data chunk.
+ */
 package com.ferretgodmother.soundfont
 {
     public class SoundPropertyObject extends SFObject
@@ -63,16 +69,23 @@ package com.ferretgodmother.soundfont
             return PROPERTY_NAMES.slice();
         }
 
+        // To keep the size of serialized the representation of SoundPropertyObjects to a minimum, only non-default
+        // values are serialized.
         public function isDefault(prop:String):Boolean
         {
             return PROPERTY_NAMES.indexOf(prop) != -1 && DEFAULTS[prop] == this[prop];
         }
 
+        // To keep the size of serialized the representation of SoundPropertyObjects to a minimum, only non-default
+        // values are serialized.
         override protected function includePropertyInSerialization(propertyName:String):Boolean
         {
             return !isDefault(propertyName) && super.includePropertyInSerialization(propertyName);
         }
 
+        // We could manually write out a constant that containes the default values of the propetties of this class.
+        // Instead we let the class do it for us based on the initial values of the public properties defined above.
+        // Nifty little hack, eh?
         protected function initStaticConstants(propertyNames:Array, defaults:Object):void
         {
             var props:Array = super.propertyNames.concat(getPropertyNames(false));

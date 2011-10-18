@@ -1,3 +1,6 @@
+/**
+ * An PresetZone contains an Instrument property plus any generated properties that modify that Instrument.
+ */
 package com.ferretgodmother.soundfont
 {
     public class PresetZone extends Zone
@@ -6,6 +9,9 @@ package com.ferretgodmother.soundfont
 
         private static const DEFAULTS:Object = {};
 
+        // The SoundFont specifications define the property name for the index of the instrument as "instrument."
+        // To prevent confusion, we change that to "instrumentID" and let "instrument" refer to the instrument
+        // object corresponding to that index.
         public var instrumentID:int = -1;
         public var instrument:Instrument;
 

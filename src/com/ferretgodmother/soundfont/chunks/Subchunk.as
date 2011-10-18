@@ -39,7 +39,8 @@ package com.ferretgodmother.soundfont.chunks
                 var record:Object = createRecord(value);
                 this.records.push(record);
             }
-            // One "terminal" record needs to be read from the ByteArray
+            // One "terminal" record needs to be read from the ByteArray. By calling createRecord() and ignoring
+            // the returned object, we skip over the terminal record.
             createRecord(value);
         }
 

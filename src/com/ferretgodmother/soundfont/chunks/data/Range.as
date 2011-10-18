@@ -1,5 +1,5 @@
 /*
-    A data structure representing the low and high byte vlues of a ValueGenerator
+    A data structure representing the low and high byte values of a ValueGenerator
 */
 package com.ferretgodmother.soundfont.chunks.data
 {

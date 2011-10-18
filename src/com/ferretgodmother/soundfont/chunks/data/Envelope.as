@@ -1,3 +1,6 @@
+/*
+    Envelope is a data structure for the six properties that define a SoundFont envelope.
+*/
 package com.ferretgodmother.soundfont.chunks.data
 {
     import com.ferretgodmother.soundfont.SFObject;

@@ -53,6 +53,7 @@ package com.ferretgodmother.soundfont
             buildPresets(_data.dataChunk);
         }
 
+        // Construct a NoteSample object for the given keyNum/velocity pair.
         public function getNoteSample(keyNum:int, velocity:int):NoteSample
         {
             var presetZone:PresetZone = getPresetZone(keyNum, velocity);
@@ -65,7 +66,9 @@ package com.ferretgodmother.soundfont
                     var noteSample:NoteSample = new NoteSample(sample, keyNum, velocity);
                     for each (var prop:String in NoteSample.PROPERTY_NAMES)
                     {
+                        // Instrument generators replace the corresponding properties of the sample
                         noteSample[prop] = instrumentZone[prop];
+                        // Preset generators are added to the corresponding properties of the sample + Instrument generator
                         if (presetZone.hasOwnProperty(prop))
                         {
                             noteSample[prop] += presetZone[prop];

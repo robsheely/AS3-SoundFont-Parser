@@ -1,3 +1,6 @@
+/**
+ * An InstrumentZone contains a Sample property plus any generated properties that modify that Sample.
+ */
 package com.ferretgodmother.soundfont
 {
     import com.ferretgodmother.soundfont.chunks.data.SampleRecord;

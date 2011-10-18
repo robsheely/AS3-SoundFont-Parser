@@ -16,6 +16,11 @@ package com.ferretgodmother.soundfont.chunks.data
             return getRecord(index) as ZoneRecord;
         }
 
+        /* A "bag" is a subchunk that contains an arbitrary number of data records. Each record in the bag contains a
+        generator index and a modulator index. The generator index represents the index of the first generator operator
+        that belongs to the InstrumentZone or PresetZone associated with the bag record. By navigating through the
+        given generators subchunk we construct Generators and Operators, assigning the Operators to the appropriate
+        Generator and the Genrators to the appropriate Zone. */
         public function processGenerators(generators:GeneratorsSubchunk, bags:BagsSubchunk):void
         {
             var numBags:int = bags.numRecords;
@@ -25,6 +30,9 @@ package com.ferretgodmother.soundfont.chunks.data
                 var record:ZoneRecord = getZoneRecord(i);
                 var nextRecord:ZoneRecord = (i < this.numRecords - 1) ? getZoneRecord(i + 1) : null;
                 var generatorStart:int = record.index;
+                // The index of last generator of the current ZoneRecord is one less than the index of the first
+                // generator of the next ZoneRecord -- unless this is the last ZoneRecord. In that case, the index of
+                // the last generator is one less than the total number of records contained in the bags subchunk.
                 var generatorEnd:int = (nextRecord != null) ? nextRecord.index : numBags;
                 for (var j:int = generatorStart; j < generatorEnd; j++)
                 {

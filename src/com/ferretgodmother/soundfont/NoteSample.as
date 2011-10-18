@@ -1,3 +1,8 @@
+/**
+ * NoteSample represents a sample waveform and a series of properties that modify it. These properties are generated
+ * by the getNoteSample() function of the SoundFont class. It should provide all the ingredients necessary to
+ * produce a musical note for a given keyNum/velocity pair.
+ */
 package com.ferretgodmother.soundfont
 {
     import com.ferretgodmother.soundfont.chunks.data.SampleRecord;
@@ -47,6 +52,7 @@ package com.ferretgodmother.soundfont
             this.velocity = velocity;
         }
 
+        // Fill the _sampleData ByteArray with values from the sample waveform.
         protected function generateSampleData(sample:SampleRecord):void
         {
             _sampleData = new ByteArray();
@@ -65,6 +71,7 @@ package com.ferretgodmother.soundfont
             return PROPERTY_NAMES.indexOf(prop) != -1 && DEFAULTS[prop] == this[prop];
         }
 
+        // The multiplier to apply to the sample to produce the desired note for the given MIDI keyNum.
         public function getTransposition(keyNum:int):Number
         {
             return noteToFrequency(keyNum) / this.rootFrequency;
@@ -79,11 +86,13 @@ package com.ferretgodmother.soundfont
             return 440 * Math.pow(2.0, (note - 69) / 12);
         }
 
+        // The keyNum that represents the note for the original recorded sample.
         public function get rootKey():int
         {
             return (isDefault("overridingRootKey")) ? this.sample.originalPitch : this.overridingRootKey;
         }
 
+        // The rootKey modified by any coarse and fine correction values.
         public function get rootFrequency():Number
         {
             return noteToFrequency(this.rootKey + sample.pitchCorrection * 0.1 + this.coarseTune + this.fineTune * 0.01);

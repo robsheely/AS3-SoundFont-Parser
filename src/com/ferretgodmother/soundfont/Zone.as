@@ -1,3 +1,10 @@
+/**
+ * A zone is a portion of either an instrument or a preset that corresponds to a given keyRange/velocityRange pair.
+ * Presets contain PresetZones and Instruments contain InstrumentZones.
+ *
+ * PresetZones contain an Instrument property plus any generated properties that modify that Instrument.
+ * InstrumentZones contain a Sample property plus any generated properties that modify that Sample.
+ */
 package com.ferretgodmother.soundfont
 {
     import com.ferretgodmother.soundfont.chunks.data.Range;

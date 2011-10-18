@@ -1,3 +1,9 @@
+/*
+    A SoundFont Generator represents a list of operators that modify the properties of an InstrumentZone or a
+    PresetZone. These operators are contained in the Instrument Generators subchunk and the Preset Generators subchunk.
+    (Note: There is no "InstrumentGeneratorRecord" or "PresetGeneratorRecord" class, only the "GeneratorRecord" class
+    which does double duty.)
+*/
 package com.ferretgodmother.soundfont.chunks.data
 {
     import flash.utils.Dictionary;
